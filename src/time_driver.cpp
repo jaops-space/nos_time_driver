@@ -111,12 +111,18 @@ namespace Nos3
 
             while (1) 
             {
+                gettimeofday(&_now, NULL);
+                 _last_time_diff = time_diff();
+                int64_t sleep_time = (int64_t) (_real_microseconds_per_tick -_last_time_diff - 100) ;
+                //printf("sleepig for %ld microsec", sleep_time);
+                if (sleep_time > 0) {
+                    std::this_thread::sleep_for(std::chrono::microseconds(sleep_time));
+                    
                 do {
-                    //std::this_thread::sleep_for(std::chrono::microseconds(_real_microseconds_per_tick/10));
-                    gettimeofday(&_now, NULL);
-                    _last_time_diff = time_diff();
-                } while (_last_time_diff < _real_microseconds_per_tick);
-
+                        gettimeofday(&_now, NULL);
+                        _last_time_diff = time_diff();
+                  } while (_last_time_diff < _real_microseconds_per_tick);
+                }
     			int64_t ticks_per_second = 1000000/_real_microseconds_per_tick;
                 _then = _now;
                 
